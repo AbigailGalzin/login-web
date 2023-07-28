@@ -2,6 +2,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { LoginService } from 'src/app/services/login.service';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class LoginComponent {
   public loginData: FormGroup;
 
-  constructor(){
+  constructor(private loginService: LoginService){
     this.loginData = new FormGroup({
       username: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required),
@@ -19,15 +20,24 @@ export class LoginComponent {
   }
 
   login(){    
-    alert('Hola ' + this.setData().username);
+    let users: any;
+    this.loginService.createUser(this.getFormData()).subscribe((response: any)=> {      
+      alert('Usuario guardado');
+      this.loginData = new FormGroup({
+        username: new FormControl('', Validators.required),
+        password: new FormControl('', Validators.required),
+      })
+    });    
+    this.loginService.getUsers().subscribe((response: any)=> {      
+      users = response;
+    });    
   }
 
-  setData(){
+  getFormData(){
     var data = {
       username: this.loginData.value.username,
       password: this.loginData.value.password
     }
-    console.log(data);
     return data;
   }
   get controls(){ return this.loginData.controls}
