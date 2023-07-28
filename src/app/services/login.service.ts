@@ -9,9 +9,6 @@ export class LoginService {
   constructor(private apiService: ApiService) { }
 
   createUser(newUser: any){
-    /*this.apiService.post('user', user).subscribe((response: any)=> {      
-      console.log(response);
-    });*/
     return this.apiService.post('user', newUser);
   }
 

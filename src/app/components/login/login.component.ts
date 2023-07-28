@@ -1,8 +1,10 @@
 
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
 import { LoginService } from 'src/app/services/login.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +14,11 @@ import { LoginService } from 'src/app/services/login.service';
 export class LoginComponent {
   public loginData: FormGroup;
 
-  constructor(private loginService: LoginService){
+  constructor(
+      private loginService: LoginService,
+      private userService: UserService,
+      private router: Router
+    ){
     this.loginData = new FormGroup({
       username: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required),
@@ -23,10 +29,8 @@ export class LoginComponent {
     let users: any;
     this.loginService.createUser(this.getFormData()).subscribe((response: any)=> {      
       alert('Usuario guardado');
-      this.loginData = new FormGroup({
-        username: new FormControl('', Validators.required),
-        password: new FormControl('', Validators.required),
-      })
+      this.userService.setCurrentUser(response);
+      this.router.navigate(['/user']);
     });    
     this.loginService.getUsers().subscribe((response: any)=> {      
       users = response;
